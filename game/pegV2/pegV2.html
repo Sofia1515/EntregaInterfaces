@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Peg Solitarie</title>
+    <link rel="stylesheet" href="pegV2.css">
+    <link href="https://fonts.cdnfonts.com/css/jetbrains-mono" rel="stylesheet">
+</head>
+<body>
+    
+    <header>
+        <div class="header-nav">
+            <div class="header-title">    
+                <button><img src="./images/Icons/HamburguerIcon.png" alt="HamburguerIcon" id="hamburguer-button"></button>
+                <a href="/home/home.html" style="text-decoration: none;"><h1 class="page-name">NextLevel</h1></a>
+            </div>
+            <div class="header-searchBar">
+                <input type="search" placeholder="Search game..." />     
+            </div>
+            <div class="header-config">
+                <button><img src="./images/Icons/config.png" alt="ConfigIcon" id="config-button"></button>
+            </div>
+        </div>
+    </header>
+
+    
+    <aside class="hamburguer-section hamburguer-hidden">
+        <div class="hamb-categories">
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/home.png" alt=""> Home</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/morePlayed.png" alt=""> More played</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/lastPlayed.png" alt=""> Last played</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/recentlyUpdated.png" alt=""> Recently updated</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/moreLiked.png" alt=""> More liked</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/favorites.png" alt=""> Favorites</p>
+            <div class="divisor"></div>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/espada.png" alt="icon"> Action</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/senderismo.png" alt="icon"> Adventure</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/baloncesto.png" alt="icon"> Basketball</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/control-del-juego.png" alt="icon"> Casual</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/cocina.png" alt="icon"> Cook</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/dados.png" alt="icon"> Dice</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/puerta.png" alt="icon"> Escape</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/multiplayer.png" alt="icon"> Multiplayer</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/races.png" alt="icon"> Races</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/rpg.png" alt="icon"> Rpg</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/deportes.png" alt="icon"> Sports</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/stickman.png" alt="icon"> Stickman</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/terror.png" alt="icon"> Terror</p>
+        </div>
+    </aside>
+    
+    <main>
+      
+        <div class="main-game" id="main-game">
+            <div class="game-execution-screen">
+                <div class="game-center-info" id="game-center-info">
+                    <div class="game-image">
+                        <img src="./images/gameImages/pegSolitarie.jpg" alt="gameImage">
+                    </div>
+                    <p>Peg solitarie</p>
+                    <button class="play-button">JUGAR</button>
+                </div>
+                
+                <div class="game-SelectPieceImg hidden" id="game-SelectPieceImg">
+                    <div class="div-h3selecPiece"><h3>Selecciona la pieza con la que quieres jugar.</h3></div>
+                    <div class="showPiecesImg" id="showPiecesImg">
+                        
+                    </div>
+                </div>
+                
+                <div class="hidden" id="game-execution">
+                    <div id="game-over-panel" class="hidden">
+                        <div class="game-over-content">
+                            <h2 id="game-over-title"></h2>
+                            <p id="game-over-message"></p>
+                            <button id="restart-btn">Reiniciar</button>
+                        </div>
+                    </div>
+                    <canvas id="myCanvas" height="100%"></canvas>
+                </div>
+            </div>
+            
+            <div class="game-info-buttons">
+                <div class="game-buttons-section">
+                    <img src="./images/Icons/controls.png" alt="controls" class="game-info-button" id="button-controls">
+                    <div class="controls-panel hidden" id="control-panel"> </div>
+                    <img src="./images/Icons/like.png" alt="like" class="game-info-button" id="button-like">
+                    <img src="./images/Icons/dislike.png" alt="dislike" class="game-info-button" id="button-dislike">
+                    <img src="./images/Icons/fullScreen.png" alt="fullScreen" class="game-info-button" id="button-fullScreen">
+                </div>
+            </div>
+            <div class="details-recomended">
+                
+                <div class="game-details-section">
+                    <div class="breadcrum">
+                        <a href="/home/home.html" style="text-decoration: none; color: #26ee00;"><p class="breadcrum-l">Home</p></a>
+                        <span>></span>
+                        <p class="breadcrum-l">Boards</p>
+                        <span>></span>
+                        <p class="breadcrum-l">Peg Solitarie</p>
+                    </div>
+                    <div class="game-details">
+                        <div><h1 class="game-name">Peg Solitarie</h1></div>
+                        <div class="team-info">
+                            <div class="info">
+                                <h2>Developer:</h2>
+                                <p class="res"> Group 27</p>
+                            </div>
+                            <div class="info">
+                                <h2>Rating:</h2>
+                                <p class="res"> 7.8</p>
+                            </div>
+                            <div class="info">
+                                <h2>Release:</h2>
+                                <p class="res"> November 2025</p>
+                            </div>
+                            <div class="info">
+                                <h2>Platforms:</h2>
+                                <p class="res"> Browser (desktop, mobile, tablet), App Store(Android)</p>
+                            </div>
+                        </div>
+                        <div class="game-categories-section">
+                            <div class="game-categorie">Board</div>
+                            <div class="game-categorie">Turns</div>
+                            <div class="game-categorie">Strategy</div>
+                            <div class="game-categorie">Batman</div>
+                            <div class="game-categorie">Heroes</div>
+                            <div class="game-categorie">1 Player</div>
+                        </div>
+                        <div class="game-description">
+                            <p>¡Gotham City esta siendo invadida! Batman esta en problemas y necesita tu ayuda. En este juego de estrategia deberas ayudar a batman a recuperar Gotham.
+                                Adentrate en los callejones mas oscuros y ayuda a Batman a recuperar la ciudad. 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-recomended-section">
+                    <div><img src="./images/recomendedGames/silkSong.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/hit&Run.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/budokaiTenkaichi.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/gofOfWar.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/principeDePersia.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/batmanArkhamKnight.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/spiderManGame.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/gtaViceCity.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/ark.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/2k25.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/fm26.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/wildones.jpg" alt="" class="recomended-game"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+        <aside class="config-section config-hidden">
+            <h3>Configuration</h3>
+            <div class="config-sections">
+                <div class="c-section">
+                    <img src="./images/Icons/avatar.png" alt="">
+                    <p>Profile</p>
+                </div>
+                <div class="c-section">
+                    <img src="./images/Icons/settings.png" alt="">
+                    <p>Settings</p>
+                </div>
+                <div class="c-section">
+                    <img src="./images/Icons/FriendsIcon.png" alt="">
+                    <p>Friends</p>
+                </div>
+            </div>
+        </aside>   
+
+
+    <script src="pegV2.js"></script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Rocket Driver</title>
+    <link rel="stylesheet" href="flappyBatman.css">
+    <link rel="stylesheet" href="game.css">
+    <link href="https://fonts.cdnfonts.com/css/jetbrains-mono" rel="stylesheet">
+</head>
+<body class="paused">
+    
+    <header>
+        <div class="header-nav">
+            <div class="header-title">    
+                <button><img src="./images/Icons/HamburguerIcon.png" alt="HamburguerIcon" id="hamburguer-button"></button>
+                <a href="/home/home.html" style="text-decoration: none;"><h1 class="page-name">NextLevel</h1></a>
+            </div>
+            <div class="header-searchBar">
+                <input type="search" placeholder="Search game..." />     
+            </div>
+            <div class="header-config">
+                <button><img src="./images/Icons/config.png" alt="ConfigIcon" id="config-button"></button>
+            </div>
+        </div>
+    </header>
+
+    
+    <aside class="hamburguer-section hamburguer-hidden">
+        <div class="hamb-categories">
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/home.png" alt=""> Home</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/morePlayed.png" alt=""> More played</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/lastPlayed.png" alt=""> Last played</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/recentlyUpdated.png" alt=""> Recently updated</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/moreLiked.png" alt=""> More liked</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/favorites.png" alt=""> Favorites</p>
+            <div class="divisor"></div>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/espada.png" alt="icon"> Action</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/senderismo.png" alt="icon"> Adventure</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/baloncesto.png" alt="icon"> Basketball</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/control-del-juego.png" alt="icon"> Casual</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/cocina.png" alt="icon"> Cook</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/dados.png" alt="icon"> Dice</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/puerta.png" alt="icon"> Escape</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/multiplayer.png" alt="icon"> Multiplayer</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/races.png" alt="icon"> Races</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/rpg.png" alt="icon"> Rpg</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/deportes.png" alt="icon"> Sports</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/stickman.png" alt="icon"> Stickman</p>
+            <p class="categorie"> <img src="./images/Icons/CategorieIcons/terror.png" alt="icon"> Terror</p>
+        </div>
+    </aside>
+    
+    <main>
+      
+        <div class="main-game" id="main-game">
+            <div class="game-execution-screen" id="game-execution-screen">
+                    <div class="game-center-info" id="game-center-info">
+                        <div class="game-image">
+                            <img src="./images/gameImages/logo.png" alt="gameImage">
+                        </div>
+                        <p>Rocket Driver</p>
+                        <button class="play-button" id="play-button">JUGAR</button>
+                    </div>
+                
+                    <div class="game-execution hidden" id="game-execution">
+                        <div class="game-container">
+                        <div class="div-monedas">
+                            <div class="coin-counter"></div>
+                            <div class="coin-counter"></div>
+                            <div class="coin-counter"></div>
+                        </div>
+                        <div class="layer layer7" id="layer7"></div>
+                        <div class="layer layer6" id="layer6"></div>
+                        <div class="layer layer5" id="layer5"></div>
+                        <div class="layer layer4" id="layer4"></div>
+                        <div class="layer layer3" id="layer3"></div>
+                        <div class="layer layer2" id="layer2"></div>
+                        <div class="layer layer1" id="layer1"></div>
+                        <div class="div-mensaje-inicio" id="div-mensaje-inicio">
+                            <p>Presiona espacio para comenzar a jugar.</p>
+                        </div>
+                        <div class="div-derrota hidden" id="div-derrota">
+                            <h1>¡Chocaste!</h1>
+                            <button id="btn-jugar-de-nuevo">Jugar de nuevo</button>
+                        </div>
+                        <div class="spaceship" id="spaceship"> </div>
+                        <div class="propulsores propulsores-low" id="propulsores"></div>
+                        <div class="tuberias" id="conteiner-tuberias"></div>
+                        </div>
+                    </div>
+            </div>
+            
+            <div class="game-info-buttons">
+                <div class="game-buttons-section">
+                    <img src="./images/Icons/controls.png" alt="controls" class="game-info-button" id="button-controls">
+                    <div class="controls-panel hidden" id="control-panel"> </div>
+                    <img src="./images/Icons/like.png" alt="like" class="game-info-button" id="button-like">
+                    <img src="./images/Icons/dislike.png" alt="dislike" class="game-info-button" id="button-dislike">
+                    <img src="./images/Icons/fullScreen.png" alt="fullScreen" class="game-info-button" id="button-fullScreen">
+                </div>
+            </div>
+            <div class="details-recomended">
+                
+                <div class="game-details-section">
+                    <div class="breadcrum">
+                        <a href="/home/home.html" style="text-decoration: none; color: #26ee00;"><p class="breadcrum-l">Home</p></a>
+                        <span>></span>
+                        <p class="breadcrum-l">Casuals</p>
+                        <span>></span>
+                        <p class="breadcrum-l">Rocket Dirver</p>
+                    </div>
+                    <div class="game-details">
+                        <div><h1 class="game-name">Rocket Driver</h1></div>
+                        <div class="team-info">
+                            <div class="info">
+                                <h2>Developer:</h2>
+                                <p class="res"> Group 27</p>
+                            </div>
+                            <div class="info">
+                                <h2>Rating:</h2>
+                                <p class="res"> 8.2</p>
+                            </div>
+                            <div class="info">
+                                <h2>Release:</h2>
+                                <p class="res"> November 2025</p>
+                            </div>
+                            <div class="info">
+                                <h2>Platforms:</h2>
+                                <p class="res"> Browser (desktop, mobile (soon))</p>
+                            </div>
+                        </div>
+                        <div class="game-categories-section">
+                            <div class="game-categorie">2D</div>
+                            <div class="game-categorie">Drive</div>
+                            <div class="game-categorie">Shoot</div>
+                            <div class="game-categorie">Evade</div>
+                            <div class="game-categorie">1 Player</div>
+                        </div>
+                        <div class="game-description">
+                            <p>¡Ven, ayuda a salvar la tierra! Hay una invasión y necesitamos tu ayuda. Tom te dejo la última nave disponible
+                                para eliminar a esos invadores. Tu eres el único capaz de hacerlo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-recomended-section">
+                    <div><img src="./images/recomendedGames/silkSong.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/hit&Run.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/budokaiTenkaichi.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/gofOfWar.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/principeDePersia.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/batmanArkhamKnight.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/spiderManGame.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/gtaViceCity.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/ark.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/2k25.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/fm26.jpg" alt="" class="recomended-game"></div>
+                    <div><img src="./images/recomendedGames/wildones.jpg" alt="" class="recomended-game"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+        <aside class="config-section config-hidden">
+            <h3>Configuration</h3>
+            <div class="config-sections">
+                <div class="c-section">
+                    <img src="./images/Icons/avatar.png" alt="">
+                    <p>Profile</p>
+                </div>
+                <div class="c-section">
+                    <img src="./images/Icons/settings.png" alt="">
+                    <p>Settings</p>
+                </div>
+                <div class="c-section">
+                    <img src="./images/Icons/FriendsIcon.png" alt="">
+                    <p>Friends</p>
+                </div>
+            </div>
+        </aside>   
+
+
+    <script src="game.js"></script>
+    <script src="flappyBatman.js"></script>
+</body>
+</html>

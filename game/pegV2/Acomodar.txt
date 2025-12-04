@@ -1,0 +1,12 @@
+1 - Game.js linea 152 - Acomodar para que se vean divs cuando se pierde.
+
+Puntos del practico completado listos:
+1 - Esta
+2 - Esta
+3 - Esta
+4 - Esta
+5 - Esta 
+6 - Esta
+7 - Falta el reincio del juego.
+8 - Falta ayuda sobre como jugar y descripcion del mismo.
+9 - Esta
