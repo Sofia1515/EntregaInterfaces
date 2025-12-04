@@ -213,7 +213,9 @@ body.paused #contenier-enemigos {
   position: absolute;
   width: 300px;
   background-image: url("./assetpack/tuberia.png");
+  /* No repetir la imagen; estirarla para cubrir la altura asignada por JS. */
   background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 .tuberia.arriba {
