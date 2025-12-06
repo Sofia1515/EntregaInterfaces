@@ -36,7 +36,7 @@ class Cell { // Representa una celda individual en el tablero
         return piece
     }
 
-    draw(ctx) { // Dibuja la celda en el canvas
+    draw(ctx, theme) { // Dibuja la celda en el canvas
         if (!this.isValid) {
             return;
         }
@@ -48,13 +48,13 @@ class Cell { // Representa una celda individual en el tablero
             this.radius, 
             0, 
             Math.PI * 2);
-        ctx.strokeStyle = "#3b3737ff"
+        ctx.strokeStyle = theme ? theme.cellColor : "#3b3737ff"
         ctx.lineWidth = 3
         ctx.stroke()
         ctx.closePath()
     }
 
-    drawCenterCell(ctx) { // Dibujo la celda del medio del tablero
+    drawCenterCell(ctx, theme) { // Dibujo la celda del medio del tablero
         if (!this.isValid) {
             return;
         }
@@ -66,9 +66,10 @@ class Cell { // Representa una celda individual en el tablero
             this.radius, 
             0, 
             Math.PI * 2);
-        ctx.strokeStyle = "#767575ff"
+        const centerColor = theme ? theme.cellValidColor : "#767575ff"
+        ctx.strokeStyle = centerColor
         ctx.lineWidth = 3
-        ctx.fillStyle = "#767575ff"
+        ctx.fillStyle = centerColor
         ctx.fill()
         ctx.stroke()
         ctx.closePath()

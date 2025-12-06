@@ -32,6 +32,7 @@ class Game {
     this.score = 0
     this.gameMode = "normal" // "normal" o "challenge"
     this.currentChallenge = null // Desafío actual si está en modo challenge
+    this.selectedTheme = null // Tema seleccionado
 
     this.setupEventListeners()
 
@@ -94,6 +95,13 @@ class Game {
       this.gameMode = "challenge"
       this.currentChallenge = challenge
       this.initialize()
+    }
+  }
+
+  setTheme(themeId) { // Aplica un tema específico
+    const theme = Themes.getThemeById(themeId)
+    if (theme) {
+      this.selectedTheme = theme
     }
   }
 
@@ -274,7 +282,7 @@ class Game {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     // Dibujar tablero
-    this.board.draw()
+    this.board.draw(this.selectedTheme)
 
     // Dibujar hints
     this.hintAnimation.draw(this.ctx)

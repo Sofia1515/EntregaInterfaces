@@ -135,6 +135,7 @@ let isGameRunning = false;
 let selectedPieceSrc = null;
 let selectedGameMode = null;
 let selectedChallenge = null;
+let selectedTheme = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   const playButton = document.querySelector(".play-button");
@@ -143,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const sectionSelectPieceImg = document.getElementById("game-SelectPieceImg");
   const sectionSelectMode = document.getElementById("game-SelectMode");
   const sectionSelectChallenge = document.getElementById("game-SelectChallenge");
+  const sectionSelectTheme = document.getElementById("game-SelectTheme");
 
   // Boton de jugar
   playButton.addEventListener("click", () => {
@@ -172,14 +174,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
           selectChallenge();
         } else {
-          // Si es normal, mostrar selección de piezas
+          // Si es normal, mostrar selección de temática
           sectionSelectMode.classList.remove("visible");
           sectionSelectMode.classList.add("hidden");
 
-          sectionSelectPieceImg.classList.remove("hidden");
-          sectionSelectPieceImg.classList.add("visible");
+          sectionSelectTheme.classList.remove("hidden");
+          sectionSelectTheme.classList.add("visible");
 
-          selectPieceImg();
+          selectTheme();
         }
       });
     });
@@ -205,13 +207,52 @@ document.addEventListener("DOMContentLoaded", () => {
         sectionSelectChallenge.classList.remove("visible");
         sectionSelectChallenge.classList.add("hidden");
 
+        sectionSelectTheme.classList.remove("hidden");
+        sectionSelectTheme.classList.add("visible");
+
+        selectTheme();
+      });
+
+      showChallenges.appendChild(challengeDiv);
+    });
+  }
+
+  function selectTheme() {
+    const showThemes = document.querySelector(".showThemes");
+    showThemes.innerHTML = "";
+
+    const themes = Themes.getThemes();
+
+    themes.forEach(theme => {
+      const themeDiv = document.createElement("div");
+      themeDiv.className = "theme-card";
+      
+      // Crear preview de colores
+      const previewHTML = `
+        <h3>${theme.name}</h3>
+        <div class="theme-card-preview">
+          <div class="theme-preview-box" style="background-color: ${theme.pieceColor};"></div>
+          <div class="theme-preview-box" style="background-color: ${theme.cellColor};"></div>
+          <div class="theme-preview-box" style="background-color: ${theme.cellValidColor};"></div>
+        </div>
+        <p class="description">${theme.description}</p>
+      `;
+      
+      themeDiv.innerHTML = previewHTML;
+      
+      themeDiv.addEventListener("click", () => {
+        selectedTheme = theme.id;
+
+        sectionSelectTheme.classList.remove("visible");
+        sectionSelectTheme.classList.add("hidden");
+
         sectionSelectPieceImg.classList.remove("hidden");
         sectionSelectPieceImg.classList.add("visible");
 
         selectPieceImg();
       });
 
-      showChallenges.appendChild(challengeDiv);
+      showThemes.appendChild(themeDiv);
     });
   }
 
@@ -256,6 +297,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // Si es modo desafío, cargar el desafío
         if (selectedGameMode === "challenge" && selectedChallenge) {
           game.setChallenge(selectedChallenge);
+        }
+        
+        // Aplicar tema seleccionado
+        if (selectedTheme) {
+          game.setTheme(selectedTheme);
         }
         
         // Conectar botones de ayuda

@@ -591,6 +591,72 @@ main {
   opacity: 0.9;
 }
 
+/* ========== Selector de Temática ========== */
+
+.game-SelectTheme {
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  background-color: #151515;
+  padding: 20px;
+}
+
+.div-h3selecTheme {
+  width: 100%;
+  padding: 10px;
+  justify-content: center;
+  display: flex;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.showThemes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.theme-card {
+  background: linear-gradient(135deg, #26ee00, #1fd600);
+  border-radius: 10px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: black;
+}
+
+.theme-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(38, 238, 0, 0.6);
+}
+
+.theme-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.theme-card .description {
+  margin: 10px 0 0 0;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.theme-card-preview {
+  margin: 10px 0;
+  display: flex;
+  gap: 5px;
+  height: 20px;
+}
+
+.theme-preview-box {
+  flex: 1;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
 /*--- Al perder o ganar ---*/
 #game-over-panel {
   position: fixed;

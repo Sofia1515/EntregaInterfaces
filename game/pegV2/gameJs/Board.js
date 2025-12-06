@@ -194,7 +194,7 @@ class Board {
         return this.pieces.length
     }
 
-    draw() { // Dibuja el tablero completo
+    draw(theme) { // Dibuja el tablero completo
         const ctx = this.ctx;
         
         //Dibuja el tablero con  el fondo si esta cargado
@@ -208,9 +208,9 @@ class Board {
         for (let row = 0; row < this.boardSize; row++) {
             for (let col = 0; col < this.boardSize; col++) {
                 if (row == centerRow && col == centerCol) {
-                    this.cells[row][col].drawCenterCell(this.ctx)
+                    this.cells[row][col].drawCenterCell(this.ctx, theme)
                 } else {
-                    this.cells[row][col].draw(this.ctx)
+                    this.cells[row][col].draw(this.ctx, theme)
                 }
             }
         }
