@@ -68,6 +68,23 @@ class Board {
         }
     }
 
+    initializePiecesFromChallenge(pieceImage, challengeConfig) { // Inicializa las piezas desde una configuración de desafío
+        this.pieces = []
+
+        for (let row = 0; row < this.boardSize; row++) {
+            for (let col = 0; col < this.boardSize; col++) {
+                const cell = this.cells[row][col]
+
+                // Coloca pieza si la configuración del desafío lo indica (1 = pieza)
+                if (cell.isValid && challengeConfig[row][col] === 1) {
+                    const piece = new Piece(pieceImage)
+                    cell.setPiece(piece)
+                    this.pieces.push(piece)
+                }
+            }
+        }
+    }
+
     getCell(row, col) { // Obtiene una celda en una posicion especifica
         if (row >= 0 && row < this.boardSize && col >= 0 && col < this.boardSize) {
             return this.cells[row][col]

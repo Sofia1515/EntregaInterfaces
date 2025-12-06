@@ -69,6 +69,21 @@
                     </div>
                 </div>
                 
+                <div class="game-SelectMode hidden" id="game-SelectMode">
+                    <div class="div-h3selecMode"><h3>Selecciona un modo de juego</h3></div>
+                    <div class="showModes" id="showModes">
+                        <button class="mode-button" data-mode="normal">Modo Normal</button>
+                        <button class="mode-button" data-mode="challenge">Modo Desafío</button>
+                    </div>
+                </div>
+
+                <div class="game-SelectChallenge hidden" id="game-SelectChallenge">
+                    <div class="div-h3selecChallenge"><h3>Selecciona un desafío</h3></div>
+                    <div class="showChallenges" id="showChallenges">
+                        
+                    </div>
+                </div>
+                
                 <div class="hidden" id="game-execution">
                     <div id="game-over-panel" class="hidden">
                         <div class="game-over-content">
@@ -77,6 +92,34 @@
                             <button id="restart-btn">Reiniciar</button>
                         </div>
                     </div>
+                    
+                    <!-- Botón pequeño de ayuda flotante -->
+                    <button class="help-toggle-btn" id="help-toggle-btn" title="Abrir panel de ayuda">
+                        💡
+                    </button>
+                    
+                    <!-- Panel de ayudas que se despliega -->
+                    <div class="help-panel" id="help-panel">
+                        <div class="help-panel-header">
+                            <h3>Ayudas</h3>
+                            <button class="help-panel-close" id="help-panel-close">✕</button>
+                        </div>
+                        <div class="help-panel-content">
+                            <button class="help-button-large" id="help-undo">
+                                <span class="help-button-title">Deshacer</span>
+                                <span class="help-button-count" id="undo-count">3</span>
+                            </button>
+                            <button class="help-button-large" id="help-free-placement">
+                                <span class="help-button-title">Colocar Libre</span>
+                                <span class="help-button-count" id="free-count">3</span>
+                            </button>
+                            <button class="help-button-large" id="help-hint">
+                                <span class="help-button-title">Pista</span>
+                                <span class="help-button-count" id="hint-count">3</span>
+                            </button>
+                        </div>
+                    </div>
+                    
                     <canvas id="myCanvas" height="100%"></canvas>
                 </div>
             </div>
@@ -172,6 +215,7 @@
         </aside>   
 
 
+    <script src="./gameJs/Challenges.js"></script>
     <script src="pegV2.js"></script>
 </body>
 </html>

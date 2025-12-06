@@ -24,11 +24,14 @@ class Game {
     this.board = new Board(this.canvas, 25, this.backgroundImage.src)
     this.hintAnimation = new HintAnimation()
     this.timer = new Timer(300, () => this.gameOver("time")) // 5 minutos
+    this.helpSystem = new HelpSystem(this) // Sistema de ayudas
 
     // Estado del juego
     this.selectedPiece = null
     this.gameState = "ready"
     this.score = 0
+    this.gameMode = "normal" // "normal" o "challenge"
+    this.currentChallenge = null // Desafío actual si está en modo challenge
 
     this.setupEventListeners()
 
@@ -43,7 +46,13 @@ class Game {
   }
 
   initialize() { // Inicia el juego
-    this.board.initializePieces(this.pieceImageSrc)
+    if (this.gameMode === "challenge" && this.currentChallenge) {
+      // Si es desafío, cargar la configuración del desafío
+      this.board.initializePiecesFromChallenge(this.pieceImageSrc, this.currentChallenge.pieces)
+    } else {
+      // Modo normal: configuración por defecto
+      this.board.initializePieces(this.pieceImageSrc)
+    }
     this.gameState = "ready"
     this.score = 0
     this.selectedPiece = null
@@ -61,13 +70,31 @@ class Game {
   restart() { // Restart del juego. Reinicio valores.
     this.timer.stop()
     this.timer.reset()
-    this.board.reset(this.pieceImageSrc)
+    
+    // Si es desafío, reiniciar con la configuración del desafío
+    if (this.gameMode === "challenge" && this.currentChallenge) {
+      this.board.cells = []
+      this.board.initializeBoard()
+      this.board.initializePiecesFromChallenge(this.pieceImageSrc, this.currentChallenge.pieces)
+    } else {
+      this.board.reset(this.pieceImageSrc)
+    }
+    
     this.score = 0
     this.selectedPiece = null
     this.hintAnimation.clearHints()
     this.gameState = "playing"
     this.timer.start()
     this.gameLoop()
+  }
+
+  setChallenge(challengeId) { // Carga un desafío específico
+    const challenge = Challenges.getChallengeById(challengeId)
+    if (challenge) {
+      this.gameMode = "challenge"
+      this.currentChallenge = challenge
+      this.initialize()
+    }
   }
 
   setupEventListeners() { // Preparo los eventListeners
@@ -139,10 +166,46 @@ class Game {
     const pos = this.getMousePosition(e)
     const targetCell = this.board.getCellAtPosition(pos.x, pos.y)
 
-    if (targetCell && this.board.isValidMove(this.selectedPiece.cell, targetCell)) {
-      // Movimiento válido
+    // Si está activo el modo de colocación libre, permitir soltar en cualquier celda válida
+    if (this.helpSystem.isFreePlacementActive && targetCell && targetCell.isValid && !targetCell.hasPiece()) {
+      // Guardar la pieza capturada (si aplica) para el historial
+      const fromCell = this.selectedPiece.cell
+      const middleRow = (fromCell.row + targetCell.row) / 2
+      const middleCol = (fromCell.col + targetCell.col) / 2
+      const middleCell = this.board.getCell(middleRow, middleCol)
+      
+      let capturedPiece = null
+      if (middleCell && middleCell.hasPiece()) {
+        capturedPiece = middleCell.piece
+      }
+
+      // Mover la pieza sin comer
+      fromCell.removePiece()
+      targetCell.setPiece(this.selectedPiece)
+      this.score += 5 // Menos puntos por colocación libre
+
+      // Registrar en el historial
+      this.helpSystem.recordMove(fromCell, targetCell, capturedPiece)
+
+      // Verificar si el juego terminó
+      if (!this.board.hasValidMoves()) {
+        this.gameOver("no-moves")
+      }
+
+      this.helpSystem.isFreePlacementActive = false // Desactivar después de un uso
+    } else if (targetCell && this.board.isValidMove(this.selectedPiece.cell, targetCell)) {
+      // Movimiento válido normal
+      const fromCell = this.selectedPiece.cell
+      const middleRow = (fromCell.row + targetCell.row) / 2
+      const middleCol = (fromCell.col + targetCell.col) / 2
+      const middleCell = this.board.getCell(middleRow, middleCol)
+      const capturedPiece = middleCell.piece
+
       this.board.executeMove(this.selectedPiece, targetCell)
       this.score += 10
+
+      // Registrar en el historial
+      this.helpSystem.recordMove(fromCell, targetCell, capturedPiece)
 
       // Verificar si el juego terminó
       if (!this.board.hasValidMoves()) {
@@ -247,6 +310,30 @@ class Game {
     this.ctx.font = 'bold 20px "JetBrains Mono", monospace'
     this.ctx.fillText("Reiniciar", buttonX + 10, buttonY + 26)
     this.restartButton = { x: buttonX, y: buttonY, width: buttonWidth, height: buttonHeight }
+  }
+
+  // Métodos públicos para las ayudas
+  triggerUndo() {
+    const result = this.helpSystem.undoLastMove()
+    this.draw()
+    return result
+  }
+
+  triggerFreePlacement() {
+    const result = this.helpSystem.toggleFreePlacement()
+    return result
+  }
+
+  triggerHint() {
+    const result = this.helpSystem.getHint()
+    if (result.success) {
+      this.hintAnimation.setHints([result.targetCell])
+    }
+    return result
+  }
+
+  getHelpStatus() {
+    return this.helpSystem.getHelpStatus()
   }
 
 }

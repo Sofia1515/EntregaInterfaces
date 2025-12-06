@@ -4,16 +4,16 @@
   box-sizing: border-box;
 }
 html {
-  width: 2880px;
-  height: 1800px;
+  width: 1920px;
+  height: 1080px;
   zoom: 100%;
 }
 body {
   font-size: 14px;
   background-color: #2c2a2c;
   font-family: "JetBrains Mono", monospace;
-  width: 2880px;
-  height: 1800px;
+  width: 1920px;
+  height: 1080px;
 }
 
 body::-webkit-scrollbar {
@@ -458,6 +458,7 @@ main {
 /*Seleccion de piezas*/
 .game-SelectPieceImg {
   border-radius: 5px;
+  display: flex;
   flex-direction: column;
   background-color: #151515;
 }
@@ -485,6 +486,109 @@ main {
 .pieceImg:hover {
   transform: scale(1.05);
   transition: all 0.250s ease;
+}
+
+/* ========== Selector de Modo ========== */
+
+.game-SelectMode {
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  background-color: #151515;
+}
+
+.div-h3selecMode {
+  width: 100%;
+  padding: 10px;
+  justify-content: center;
+  display: flex;
+  color: white;
+}
+
+.showModes {
+  display: flex;
+  padding: 10px;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.mode-button {
+  padding: 15px 30px;
+  border-radius: 10px;
+  background-color: #26ee00;
+  color: black;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.mode-button:hover {
+  transform: scale(1.05);
+  background-color: #1fd600;
+  box-shadow: 0 0 10px #26ee00;
+}
+
+/* ========== Selector de Desafío ========== */
+
+.game-SelectChallenge {
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  background-color: #151515;
+  padding: 20px;
+}
+
+.div-h3selecChallenge {
+  width: 100%;
+  padding: 10px;
+  justify-content: center;
+  display: flex;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.showChallenges {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.challenge-card {
+  background: linear-gradient(135deg, #26ee00, #1fd600);
+  border-radius: 10px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: black;
+}
+
+.challenge-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(38, 238, 0, 0.6);
+}
+
+.challenge-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.challenge-card .difficulty {
+  margin: 5px 0;
+  font-size: 12px;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+.challenge-card .description {
+  margin: 10px 0 0 0;
+  font-size: 12px;
+  opacity: 0.9;
 }
 
 /*--- Al perder o ganar ---*/
@@ -541,6 +645,149 @@ main {
 
 #restart-btn:hover {
   background-color: #6666ff;
+}
+
+/* ========== Botón Flotante de Ayuda ========== */
+
+.help-toggle-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #26ee00, #1fd600);
+  border: 2px solid #fff;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(38, 238, 0, 0.4);
+}
+
+.help-toggle-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 18px rgba(38, 238, 0, 0.6);
+}
+
+.help-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* ========== Panel de Ayudas ========== */
+
+.help-panel {
+  position: fixed;
+  right: -350px;
+  top: 0;
+  width: 320px;
+  height: 100vh;
+  background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+  border-left: 3px solid #26ee00;
+  z-index: 99;
+  transition: right 0.4s ease;
+  overflow-y: auto;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  padding-top: 0;
+}
+
+.help-panel.open {
+  right: 0;
+}
+
+.help-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 15px;
+  background: rgba(38, 238, 0, 0.1);
+  border-bottom: 2px solid #26ee00;
+  flex-shrink: 0;
+}
+
+.help-panel-header h3 {
+  margin: 0;
+  color: #26ee00;
+  font-size: 20px;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.help-panel-close {
+  background: none;
+  border: none;
+  color: #26ee00;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.help-panel-close:hover {
+  color: #fff;
+  transform: scale(1.2);
+}
+
+.help-panel-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.help-button-large {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #26ee00, #1fd600);
+  color: black;
+  border: none;
+  padding: 15px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: "JetBrains Mono", monospace;
+  transition: all 0.3s ease;
+}
+
+.help-button-large:hover {
+  transform: translateX(-5px);
+  box-shadow: 0 4px 12px rgba(38, 238, 0, 0.5);
+}
+
+.help-button-large:active {
+  transform: translateX(-2px);
+}
+
+.help-button-large:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #888888, #666666);
+}
+
+.help-button-title {
+  font-size: 16px;
+}
+
+.help-button-count {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 30px;
+  text-align: center;
 }
 
 /* Estilos para el div de controles */

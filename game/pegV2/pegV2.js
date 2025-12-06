@@ -133,22 +133,87 @@ function closeControlsPopover() {
 let game = null;
 let isGameRunning = false;
 let selectedPieceSrc = null;
+let selectedGameMode = null;
+let selectedChallenge = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   const playButton = document.querySelector(".play-button");
   const gameCenterInfo = document.getElementById("game-center-info");
   const gameExecution = document.getElementById("game-execution");
   const sectionSelectPieceImg = document.getElementById("game-SelectPieceImg");
+  const sectionSelectMode = document.getElementById("game-SelectMode");
+  const sectionSelectChallenge = document.getElementById("game-SelectChallenge");
 
   // Boton de jugar
   playButton.addEventListener("click", () => {
     gameCenterInfo.classList.add("hidden");
 
-    sectionSelectPieceImg.classList.remove("hidden");
-    sectionSelectPieceImg.classList.add("visible");
+    sectionSelectMode.classList.remove("hidden");
+    sectionSelectMode.classList.add("visible");
 
-    selectPieceImg();
+    selectGameMode();
   });
+
+  function selectGameMode() {
+    const showModes = document.querySelector(".showModes");
+    const modeButtons = showModes.querySelectorAll(".mode-button");
+
+    modeButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedGameMode = btn.dataset.mode;
+
+        if (selectedGameMode === "challenge") {
+          // Si es desafío, mostrar selección de desafíos
+          sectionSelectMode.classList.remove("visible");
+          sectionSelectMode.classList.add("hidden");
+
+          sectionSelectChallenge.classList.remove("hidden");
+          sectionSelectChallenge.classList.add("visible");
+
+          selectChallenge();
+        } else {
+          // Si es normal, mostrar selección de piezas
+          sectionSelectMode.classList.remove("visible");
+          sectionSelectMode.classList.add("hidden");
+
+          sectionSelectPieceImg.classList.remove("hidden");
+          sectionSelectPieceImg.classList.add("visible");
+
+          selectPieceImg();
+        }
+      });
+    });
+  }
+
+  function selectChallenge() {
+    const showChallenges = document.querySelector(".showChallenges");
+    showChallenges.innerHTML = "";
+
+    const challenges = Challenges.getChallenges();
+
+    challenges.forEach(challenge => {
+      const challengeDiv = document.createElement("div");
+      challengeDiv.className = "challenge-card";
+      challengeDiv.innerHTML = `
+        <h3>${challenge.name}</h3>
+        <p class="difficulty">${challenge.difficulty}</p>
+        <p class="description">${challenge.description}</p>
+      `;
+      challengeDiv.addEventListener("click", () => {
+        selectedChallenge = challenge.id;
+
+        sectionSelectChallenge.classList.remove("visible");
+        sectionSelectChallenge.classList.add("hidden");
+
+        sectionSelectPieceImg.classList.remove("hidden");
+        sectionSelectPieceImg.classList.add("visible");
+
+        selectPieceImg();
+      });
+
+      showChallenges.appendChild(challengeDiv);
+    });
+  }
 
   function selectPieceImg() {
     const pieceImagesSrc = [
@@ -186,19 +251,116 @@ document.addEventListener("DOMContentLoaded", () => {
   function initializeGame(pieceImgSrc) {
     loadGameClasses() // Cargo las clases y luego se inicia el juego.
       .then(() => {
-        const game = new window.Game("myCanvas", pieceImgSrc); // paso URL
+        game = new window.Game("myCanvas", pieceImgSrc); // paso URL
+        
+        // Si es modo desafío, cargar el desafío
+        if (selectedGameMode === "challenge" && selectedChallenge) {
+          game.setChallenge(selectedChallenge);
+        }
+        
+        // Conectar botones de ayuda
+        setupHelpButtons();
+        
         game.start();
     });
+  }
+
+  function setupHelpButtons() {
+    const toggleBtn = document.getElementById("help-toggle-btn");
+    const helpPanel = document.getElementById("help-panel");
+    const closeBtn = document.getElementById("help-panel-close");
+    const undoBtn = document.getElementById("help-undo");
+    const freePlacementBtn = document.getElementById("help-free-placement");
+    const hintBtn = document.getElementById("help-hint");
+
+    // Toggle del panel
+    toggleBtn.addEventListener("click", () => {
+      helpPanel.classList.toggle("open");
+    });
+
+    closeBtn.addEventListener("click", () => {
+      helpPanel.classList.remove("open");
+    });
+
+    // Cerrar al clickear fuera del panel
+    document.addEventListener("click", (e) => {
+      if (!helpPanel.contains(e.target) && e.target !== toggleBtn) {
+        helpPanel.classList.remove("open");
+      }
+    });
+
+    // Botones de ayuda
+    undoBtn.addEventListener("click", () => {
+      const result = game.triggerUndo();
+      showHelpMessage(result.message);
+      updateHelpStatus();
+    });
+
+    freePlacementBtn.addEventListener("click", () => {
+      const result = game.triggerFreePlacement();
+      showHelpMessage(result.message);
+      if (result.success) {
+        freePlacementBtn.style.opacity = result.active ? "1" : "0.5";
+      }
+      updateHelpStatus();
+    });
+
+    hintBtn.addEventListener("click", () => {
+      const result = game.triggerHint();
+      showHelpMessage(result.message);
+      updateHelpStatus();
+    });
+
+    updateHelpStatus();
+  }
+
+  function showHelpMessage(message) {
+    // Mostrar mensaje flotante temporal
+    const messageDiv = document.createElement("div");
+    messageDiv.style.position = "fixed";
+    messageDiv.style.top = "50%";
+    messageDiv.style.left = "50%";
+    messageDiv.style.transform = "translate(-50%, -50%)";
+    messageDiv.style.background = "rgba(0, 0, 0, 0.9)";
+    messageDiv.style.color = "#26ee00";
+    messageDiv.style.padding = "20px 40px";
+    messageDiv.style.borderRadius = "10px";
+    messageDiv.style.border = "2px solid #26ee00";
+    messageDiv.style.zIndex = "1000";
+    messageDiv.style.fontFamily = '"JetBrains Mono", monospace';
+    messageDiv.style.fontSize = "16px";
+    messageDiv.style.textAlign = "center";
+    messageDiv.textContent = message;
+
+    document.body.appendChild(messageDiv);
+
+    setTimeout(() => {
+      messageDiv.remove();
+    }, 3000);
+  }
+
+  function updateHelpStatus() {
+    const status = game.getHelpStatus();
+    document.getElementById("undo-count").textContent = status.undo.remaining;
+    document.getElementById("free-count").textContent = status.freePlacement.remaining;
+    document.getElementById("hint-count").textContent = status.hint.remaining;
+
+    // Deshabilitar botones si no quedan ayudas
+    document.getElementById("help-undo").disabled = status.undo.remaining === 0;
+    document.getElementById("help-free-placement").disabled = status.freePlacement.remaining === 0;
+    document.getElementById("help-hint").disabled = status.hint.remaining === 0;
   }
 
   async function loadGameClasses() {
     const scripts = [
       "./gameJs/Board.js",
       "./gameJs/Cell.js",
-      "./gameJs/Game.js",
-      "./gameJs/HintAnimation.js",
       "./gameJs/Piece.js",
-      "./gameJs/Timer.js"
+      "./gameJs/HintAnimation.js",
+      "./gameJs/Timer.js",
+      "./gameJs/HelpSystem.js",
+      "./gameJs/Challenges.js",
+      "./gameJs/Game.js"
     ];
 
     return Promise.all(
