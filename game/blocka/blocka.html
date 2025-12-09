@@ -63,11 +63,13 @@
                 </div>
                  <div class="gallery hidden"></div>
                  <div class="hidden" id="game-pieces">
-                    <h1>Seleccion la cantidad de divisiones en la imagen.</h1>
+                    <h1>Elige el tamaño del tablero.</h1>
                     <div class="game-pieces">
-                        <div class="cant-pieces">4</div>
-                        <div class="cant-pieces">6</div>
-                        <div class="cant-pieces">8</div>
+                        <div class="board-size-option" data-rows="2" data-cols="2">2x2</div>
+                        <div class="board-size-option" data-rows="2" data-cols="3">2x3</div>
+                        <div class="board-size-option" data-rows="3" data-cols="3">3x3</div>
+                        <div class="board-size-option" data-rows="2" data-cols="4">2x4</div>
+                        <div class="board-size-option" data-rows="4" data-cols="4">4x4</div>
                     </div>
                  </div>
                  <div class="hidden" id="game-execution"></div>
@@ -75,6 +77,7 @@
 
             <div class="game-info-buttons">
                 <div class="game-buttons-section">
+                    <button id="button-sound" class="sound-button" title="Activar/Desactivar Sonido">🔊</button>
                     <img src="./images/Icons/controls.png" alt="controls" class="game-info-button" id="button-controls">
                     <img src="./images/Icons/like.png" alt="like" class="game-info-button" id="button-like">
                     <img src="./images/Icons/dislike.png" alt="dislike" class="game-info-button" id="button-dislike">

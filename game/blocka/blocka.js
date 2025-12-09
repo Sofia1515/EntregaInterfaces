@@ -1,3 +1,104 @@
+/*Genera sonidos usando Web Audio API*/
+
+function generateAudioContext() {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  return audioContext;
+}
+
+/*sonido de click suave*/
+function generateClickSound() {
+  const audioCtx = generateAudioContext();
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  oscillator.frequency.value = 800;
+  oscillator.type = 'sine';
+
+  gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+
+  oscillator.start(audioCtx.currentTime);
+  oscillator.stop(audioCtx.currentTime + 0.05);
+}
+
+/*sonido de error/buzzer*/
+function generateErrorSound() {
+  const audioCtx = generateAudioContext();
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  oscillator.frequency.value = 300;
+  oscillator.type = 'square';
+
+  gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+
+  oscillator.start(audioCtx.currentTime);
+  oscillator.stop(audioCtx.currentTime + 0.3);
+}
+
+/*Genera un sonido de éxito/correcto*/
+function generateCorrectSound() {
+  const audioCtx = generateAudioContext();
+  const notes = [523.25, 659.25, 783.99];
+  
+  let startTime = audioCtx.currentTime;
+  
+  notes.forEach((frequency, index) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.frequency.value = frequency;
+    osc.type = 'sine';
+
+    const noteStart = startTime + (index * 0.1);
+    const noteDuration = 0.15;
+
+    gain.gain.setValueAtTime(0.3, noteStart);
+    gain.gain.exponentialRampToValueAtTime(0.01, noteStart + noteDuration);
+
+    osc.start(noteStart);
+    osc.stop(noteStart + noteDuration);
+  });
+}
+
+/*sonido de victoria/fanfarria*/
+function generateVictorySound() {
+  const audioCtx = generateAudioContext();
+  const notes = [523.25, 523.25, 659.25, 523.25, 783.99, 659.25];
+  
+  let startTime = audioCtx.currentTime;
+  
+  notes.forEach((frequency, index) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.frequency.value = frequency;
+    osc.type = 'sine';
+
+    const noteStart = startTime + (index * 0.15);
+    const noteDuration = 0.15;
+
+    gain.gain.setValueAtTime(0.3, noteStart);
+    gain.gain.exponentialRampToValueAtTime(0.01, noteStart + noteDuration);
+
+    osc.start(noteStart);
+    osc.stop(noteStart + noteDuration);
+  });
+}
+
 /*==== Abrir y cerrar paneles laterales===== */
 
 const hamburguerBtn = document.getElementById("hamburguer-button")
@@ -35,6 +136,17 @@ configBtn.addEventListener("click", () => {
 
 updateMainLayout()
 
+// ==== CONTROL DE SONIDO ====
+const soundButton = document.getElementById("button-sound")
+
+if (soundButton) {
+  soundButton.addEventListener("click", () => {
+    soundEnabled = !soundEnabled
+    soundButton.classList.toggle("muted", !soundEnabled)
+    soundButton.textContent = soundEnabled ? "🔊" : "🔇"
+  })
+}
+
 // ==== BLOCKA LOGICA CON CANVAS ====
 
 const playButton = document.querySelector(".play-button")
@@ -57,6 +169,42 @@ let timeElapsed = 0
 let gameActive = false
 let helpUsed = false
 let selectedFilter = "none"
+
+// Sistema de ayudas avanzado
+let helpCount = 0
+let helpAvailable = false
+let nextHelpAvailableAt = 10 // Próximo tiempo en que la ayuda estará disponible
+const HELP_INTERVAL = 10 // Intervalo entre ayudas disponibles (segundos)
+const MAX_HELPS = 3
+let lastHelpType = null // Para evitar repetir la misma ayuda seguida
+const helpTypes = {
+  showPreview: "preview", // Muestra la imagen original 2 segs
+  autoPlace: "place",     // Coloca automáticamente una pieza
+  removeFilter: "filter"  // Desactiva filtro para una pieza
+}
+
+// Sistema de sonidos
+let soundEnabled = true
+
+// Mapeo de funciones de audio generadas
+const audioGenerators = {
+  click: generateClickSound,
+  error: generateErrorSound,
+  correct: generateCorrectSound,
+  victory: generateVictorySound,
+}
+
+function playSound(soundName) {
+  if (!soundEnabled) return
+  
+  try {
+    if (audioGenerators[soundName]) {
+      audioGenerators[soundName]()
+    }
+  } catch (e) {
+    console.warn(`Error al reproducir sonido ${soundName}:`, e)
+  }
+}
 
 function applyRedFilter(ctx, x, y, width, height) {
   const imgData = ctx.getImageData(x, y, width, height)
@@ -166,26 +314,27 @@ playButton.addEventListener("click", () => {
   }, 300)
 })
 
-const pieceButtons = document.querySelectorAll(".cant-pieces")
+const boardSizeOptions = document.querySelectorAll(".board-size-option")
 const gamePiecesSection = document.getElementById("game-pieces")
 const gameExecutionSection = document.getElementById("game-execution")
 
-pieceButtons.forEach((button) => {
+boardSizeOptions.forEach((button) => {
   button.addEventListener("click", () => {
-    const pieceCount = Number.parseInt(button.textContent)
+    const boardRows = Number.parseInt(button.getAttribute("data-rows"))
+    const boardCols = Number.parseInt(button.getAttribute("data-cols"))
 
     gamePiecesSection.classList.add("hidden")
     gamePiecesSection.classList.remove("visible")
 
-    showPreGameScreen(pieceCount)
+    showPreGameScreen(boardRows, boardCols)
   })
 })
 
-function showPreGameScreen(pieceCount) {
+function showPreGameScreen(boardRows, boardCols) {
   gameExecutionSection.innerHTML = `
     <div class="game-image-center">
       <img src="${selectedImagePath}" alt="Selected Image" id="preview-image">
-      <h2 style="color: white; margin-top: 20px;">Dividir en ${pieceCount} piezas</h2>
+      <h2 style="color: white; margin-top: 20px;">Tablero ${boardRows}x${boardCols}</h2>
       <button class="start-game-button">COMENZAR A JUGAR</button>
     </div>
   `
@@ -195,11 +344,11 @@ function showPreGameScreen(pieceCount) {
 
   const startButton = gameExecutionSection.querySelector(".start-game-button")
   startButton.addEventListener("click", () => {
-    startGame(pieceCount)
+    startGame(boardRows, boardCols)
   })
 }
 
-function startGame(pieceCount) {
+function startGame(boardRows, boardCols) {
   helpUsed = false
 
   const availableFilters = [
@@ -213,22 +362,17 @@ function startGame(pieceCount) {
   selectedFilter = availableFilters[Math.floor(Math.random() * availableFilters.length)]
   console.log("Filtro aplicado:", selectedFilter)
 
-  if (pieceCount === 4) {
-    rows = 2
-    cols = 2
-    boardWidth = 400
-    boardHeight = 400
-  } else if (pieceCount === 6) {
-    rows = 2
-    cols = 3
-    boardWidth = 600
-    boardHeight = 400
-  } else if (pieceCount === 8) {
-    rows = 2
-    cols = 4
-    boardWidth = 800
-    boardHeight = 400
-  }
+  // Set rows and cols from parameters
+  rows = boardRows
+  cols = boardCols
+
+  // Calculate board dimensions dynamically based on grid size
+  const maxBoardWidth = 800
+  const maxBoardHeight = 600
+  
+  // Calculate appropriate board size to fit screen
+  boardWidth = Math.min(maxBoardWidth, 100 * cols)
+  boardHeight = Math.min(maxBoardHeight, 100 * rows)
 
   pieceWidth = (boardWidth - gap * (cols - 1)) / cols
   pieceHeight = (boardHeight - gap * (rows - 1)) / rows
@@ -249,10 +393,14 @@ function startGame(pieceCount) {
   `
 
   canvas = document.getElementById("game-canvas")
-  ctx = canvas.getContext("2d")
+  // use willReadFrequently because we call getImageData() often (filters/help)
+  ctx = canvas.getContext("2d", { willReadFrequently: true })
 
   const helpButton = document.getElementById("help-button")
-  helpButton.addEventListener("click", useHelp)
+  // Remover event listeners anteriores para evitar duplicados
+  helpButton.replaceWith(helpButton.cloneNode(true))
+  const newHelpButton = document.getElementById("help-button")
+  newHelpButton.addEventListener("click", useHelp)
 
   selectedImage = new Image()
   selectedImage.crossOrigin = "anonymous"
@@ -310,7 +458,10 @@ function drawPiece(piece, x, y) {
   const customFilters = ["rojoFuerte", "azulFuerte"]
   const isCustomFilter = customFilters.includes(selectedFilter)
 
-  if (!isCustomFilter && selectedFilter !== "none") {
+  // Si la pieza tiene noFilter (por ayuda), no aplicar filtro
+  const shouldApplyFilter = !piece.noFilter && selectedFilter !== "none"
+
+  if (shouldApplyFilter && !isCustomFilter) {
     ctx.filter = selectedFilter
   }
 
@@ -333,7 +484,7 @@ function drawPiece(piece, x, y) {
 
   ctx.filter = "none"
 
-  if (isCustomFilter) {
+  if (shouldApplyFilter && isCustomFilter) {
     const absX = x
     const absY = y
 
@@ -363,9 +514,20 @@ function handleCanvasClick(e) {
   const pieceIndex = getPieceAtPosition(mouseX, mouseY)
   if (pieceIndex !== -1) {
     if (pieces[pieceIndex].locked) {
+      playSound("error")
       return
     }
+    
+    const wasCorrect = isPieceCorrect(pieceIndex)
+    playSound("click")
     rotatePiece(pieceIndex, -90)
+    const isNowCorrect = isPieceCorrect(pieceIndex)
+    
+    if (!wasCorrect && isNowCorrect) {
+      playSound("correct")
+      pieces[pieceIndex].locked = true
+    }
+    
     drawBoard()
     checkWin()
   }
@@ -382,9 +544,20 @@ function handleCanvasRightClick(e) {
   const pieceIndex = getPieceAtPosition(mouseX, mouseY)
   if (pieceIndex !== -1) {
     if (pieces[pieceIndex].locked) {
+      playSound("error")
       return
     }
+    
+    const wasCorrect = isPieceCorrect(pieceIndex)
+    playSound("click")
     rotatePiece(pieceIndex, 90)
+    const isNowCorrect = isPieceCorrect(pieceIndex)
+    
+    if (!wasCorrect && isNowCorrect) {
+      playSound("correct")
+      pieces[pieceIndex].locked = true
+    }
+    
     drawBoard()
     checkWin()
   }
@@ -400,6 +573,12 @@ function getPieceAtPosition(x, y) {
   return -1
 }
 
+function isPieceCorrect(index) {
+  const piece = pieces[index]
+  const normalizedRotation = ((piece.rotation % 360) + 360) % 360
+  return normalizedRotation === 0
+}
+
 function rotatePiece(index, degrees) {
   const piece = pieces[index]
   piece.rotation = (piece.rotation + degrees) % 360
@@ -409,11 +588,25 @@ function rotatePiece(index, degrees) {
 function startTimer() {
   gameActive = true
   timeElapsed = 0
+  helpCount = 0
+  helpAvailable = false
+  nextHelpAvailableAt = HELP_INTERVAL
+  lastHelpType = null // Reiniciar para permitir cualquier ayuda en el primer uso
   const timerValue = document.getElementById("timer-value")
 
   timerInterval = setInterval(() => {
     timeElapsed++
     timerValue.textContent = timeElapsed
+
+    // Activar ayuda cuando se alcanza el próximo tiempo disponible
+    if (timeElapsed >= nextHelpAvailableAt && helpCount < MAX_HELPS && !helpAvailable) {
+      helpAvailable = true
+      updateHelpButton()
+      console.log("¡AYUDA DISPONIBLE A LOS", timeElapsed, "SEGUNDOS!")
+    }
+
+    // Actualizar estado del botón cada segundo
+    updateHelpButton()
 
     if (timeElapsed >= 50) {
       timerValue.style.color = "#ff0000"
@@ -450,6 +643,7 @@ function checkWin() {
 
   if (isComplete) {
     stopTimer()
+    playSound("victory")
 
     setTimeout(() => {
       canvas.width = boardWidth
@@ -480,33 +674,164 @@ function checkWin() {
   }
 }
 
-function useHelp() {
-  if (helpUsed || !gameActive) return
+function updateHelpButton() {
+  const helpButton = document.getElementById("help-button")
+  if (!helpButton) return
 
+  if (helpAvailable && helpCount < MAX_HELPS) {
+    helpButton.style.opacity = "1"
+    helpButton.style.cursor = "pointer"
+    helpButton.style.pointerEvents = "auto"
+    helpButton.style.filter = "brightness(1.3)"
+    helpButton.style.boxShadow = "0 0 20px rgba(38, 238, 0, 1), inset 0 0 20px rgba(38, 238, 0, 0.3)"
+    helpButton.classList.add("help-pulse")
+    helpButton.title = `Ayuda disponible (${MAX_HELPS - helpCount} restantes)`
+  } else if (helpCount >= MAX_HELPS) {
+    helpButton.classList.remove("help-pulse")
+    helpButton.style.opacity = "0.3"
+    helpButton.style.cursor = "not-allowed"
+    helpButton.style.pointerEvents = "none"
+    helpButton.style.boxShadow = "none"
+    helpButton.title = "No hay más ayudas disponibles"
+  } else {
+    helpButton.classList.remove("help-pulse")
+    helpButton.style.opacity = "0.5"
+    helpButton.style.cursor = "not-allowed"
+    helpButton.style.pointerEvents = "none"
+    helpButton.style.boxShadow = "none"
+    const timeRemaining = Math.max(0, nextHelpAvailableAt - timeElapsed)
+    helpButton.title = timeRemaining > 0 ? `Ayuda disponible en ${timeRemaining} segs` : `Ayuda disponible en 0 segs`
+  }
+}
+
+function useHelp() {
+  console.log("=== CLICK EN AYUDA ===")
+  console.log("gameActive:", gameActive)
+  console.log("helpCount:", helpCount, "MAX:", MAX_HELPS)
+  console.log("helpAvailable:", helpAvailable)
+  console.log("Piezas disponibles:", pieces.length)
+  
+  // Validaciones
+  if (!helpAvailable) {
+    console.log("BLOQUEADO: Ayuda no disponible")
+    return
+  }
+  if (helpCount >= MAX_HELPS) {
+    console.log("BLOQUEADO: Sin más ayudas")
+    return
+  }
+  if (!pieces || pieces.length === 0) {
+    console.log("BLOQUEADO: Sin piezas")
+    return
+  }
+
+  console.log("✓ Usando ayuda:", helpCount + 1, "de", MAX_HELPS)
+
+  // Seleccionar tipo de ayuda aleatoriamente (evitando repetir la última)
+  const helpTypeValues = Object.values(helpTypes)
+  let selectedHelpType = helpTypeValues[Math.floor(Math.random() * helpTypeValues.length)]
+  
+  // Si hay más de una opción y la seleccionada es la última, elegir otra
+  if (helpTypeValues.length > 1 && selectedHelpType === lastHelpType) {
+    // Filtrar la última usada y elegir de las restantes
+    const availableHelps = helpTypeValues.filter(help => help !== lastHelpType)
+    selectedHelpType = availableHelps[Math.floor(Math.random() * availableHelps.length)]
+  }
+  
+  lastHelpType = selectedHelpType // Guardar como última usada
+  
+  console.log("✓ Tipo de ayuda seleccionado:", selectedHelpType)
+
+  switch (selectedHelpType) {
+    case "preview":
+      console.log("✓ Ejecutando: showPreviewHelp")
+      showPreviewHelp()
+      break
+    case "place":
+      console.log("✓ Ejecutando: autoPlacePiece")
+      autoPlacePiece()
+      break
+    case "filter":
+      console.log("✓ Ejecutando: removeFilterFromPiece")
+      removeFilterFromPiece()
+      break
+  }
+
+  helpCount++
+  helpAvailable = false
+  
+  // Si no quedan más ayudas, resetear el contador para siguiente ayuda
+  if (helpCount < MAX_HELPS) {
+    nextHelpAvailableAt = timeElapsed + HELP_INTERVAL // Siguiente ayuda en HELP_INTERVAL segs más
+  }
+  
+  updateHelpButton()
+  console.log("✓ Ayuda completada. helpCount ahora:", helpCount)
+}
+
+function showPreviewHelp() {
+  // Mostrar imagen original durante 2 segundos
+  const canvas = document.getElementById("game-canvas")
+  if (!canvas) return
+
+  const ctx = canvas.getContext("2d", { willReadFrequently: true })
+
+  // Guardar el estado actual del canvas
+  const savedImageData = ctx.getImageData(0, 0, boardWidth, boardHeight)
+
+  // Dibujar imagen original sin filtros
+  ctx.clearRect(0, 0, boardWidth, boardHeight)
+  ctx.drawImage(selectedImage, 0, 0, boardWidth, boardHeight)
+
+  // Mostrar "REFERENCIA" en pantalla
+  ctx.fillStyle = "rgba(38, 238, 0, 0.7)"
+  ctx.font = "bold 40px Arial"
+  ctx.textAlign = "center"
+  ctx.textBaseline = "top"
+  ctx.fillText("REFERENCIA", boardWidth / 2, 20)
+
+  playSound("click")
+
+  // Restaurar después de 2 segundos
+  setTimeout(() => {
+    // Restaurar el canvas exactamente como estaba
+    ctx.clearRect(0, 0, boardWidth, boardHeight)
+    ctx.putImageData(savedImageData, 0, 0)
+  }, 2000)
+}
+
+function autoPlacePiece() {
+  // Encontrar una pieza incorrecta y colocarla correctamente
   const incorrectPiece = pieces.find((piece) => {
     const normalizedRotation = ((piece.rotation % 360) + 360) % 360
     return normalizedRotation !== 0
   })
 
   if (!incorrectPiece) {
+    // Si todas están correctas, no hacer nada
     return
   }
 
   incorrectPiece.rotation = 0
   incorrectPiece.locked = true
 
-  timeElapsed += 5
-  const timerValue = document.getElementById("timer-value")
-  timerValue.textContent = timeElapsed
-
-  helpUsed = true
-  const helpButton = document.getElementById("help-button")
-  helpButton.style.opacity = "0.3"
-  helpButton.style.cursor = "not-allowed"
-  helpButton.style.pointerEvents = "none"
+  playSound("correct")
 
   drawBoard()
   checkWin()
+}
+
+function removeFilterFromPiece() {
+  // Desactivar el filtro para una pieza (mostrar sin filtro)
+  const randomPiece = pieces[Math.floor(Math.random() * pieces.length)]
+  
+  // Crear una propiedad temporal para marcar que no tiene filtro
+  if (!randomPiece.noFilter) {
+    randomPiece.noFilter = true
+  }
+
+  playSound("click")
+  drawBoard()
 }
 
 function showGameOver(won) {
@@ -529,6 +854,10 @@ function showGameOver(won) {
     timeElapsed = 0
     gameActive = false
     helpUsed = false
+    helpCount = 0
+    helpAvailable = false
+    nextHelpAvailableAt = HELP_INTERVAL
+    lastHelpType = null
     selectedFilter = "none"
     pieces = []
 
